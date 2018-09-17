@@ -52,11 +52,22 @@ import { Component, Vue } from 'vue-property-decorator';
 import TodoStorage from '@/components/TodoStorage.vue';
 
 
+interface Task {
+  id: number;
+  comment: string;
+  state: number;
+}
+
+interface OptionObj {
+  value: number;
+  label: string;
+}
+
+
 @Component
 export default class ViewB extends Vue {
-  private todos: any[];
-  private todoStore: any;
-  private options: any[];
+  private todos: Task[];
+  private options: OptionObj[];
   private current: number;
 
   constructor() {
@@ -66,7 +77,6 @@ export default class ViewB extends Vue {
       {id: 2, comment: 'ToDo2', state: 0},
     ];
 
-    // this.todoStore = new TodoStorage;
     this.options = [
       {value: -1, label: 'all'},
       {value: 0, label: 'doing'},
