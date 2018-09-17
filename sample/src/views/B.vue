@@ -9,6 +9,7 @@
       {{ label.label }}
     </input>
   </label>
+
   <p>{{ computedTodos.length }} 件を表示中</p>
 
   <table>
@@ -48,9 +49,7 @@
 
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import TodoStorage from '@/components/TodoStorage.vue';
-
+import { Component, Vue, Watch } from 'vue-property-decorator';
 
 interface Task {
   id: number;
@@ -63,19 +62,37 @@ interface OptionObj {
   label: string;
 }
 
+const STORAGE_KEY = 'todos-vuejs-demo';
+
+function fetch(): Task[] {
+  // [
+  //   {id: 0, comment: "ToDo1", state: 0},
+  // ]
+  const x = localStorage.getItem(STORAGE_KEY);
+  const todos: any[] = JSON.parse(x === null ? '[]' : x);
+  todos.forEach((todo, index) => {
+    todo.id = index;
+  });
+  return todos;
+}
+
+function save(todos: Task[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+}
+
 
 @Component
 export default class ViewB extends Vue {
   private todos: Task[];
   private options: OptionObj[];
   private current: number;
+  private uid: number;
+  private changed: number;
 
   constructor() {
     super();
-    this.todos = [
-      {id: 1, comment: 'ToDo1', state: 0},
-      {id: 2, comment: 'ToDo2', state: 0},
-    ];
+    this.todos = fetch();
+    this.uid = this.todos.length;
 
     this.options = [
       {value: -1, label: 'all'},
@@ -83,6 +100,12 @@ export default class ViewB extends Vue {
       {value: 1, label: 'end'},
     ];
     this.current = -1;
+    this.changed = 0;
+  }
+
+  @Watch('todos')
+  private onChildChanged(todos: Task[]) {
+    save(todos);
   }
 
   private doAdd(event: any, value: any) {
@@ -91,7 +114,7 @@ export default class ViewB extends Vue {
       return;
     }
     this.todos.push({
-      id: 3,
+      id: this.uid++,
       comment: comment.value,
       state: 0,
     });
@@ -119,5 +142,6 @@ export default class ViewB extends Vue {
       return Object.assign(a, {[b.value]: b.label});
     }, {});
   }
+
 }
 </script>
