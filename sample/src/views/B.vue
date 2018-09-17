@@ -9,6 +9,7 @@
       {{ label.label }}
     </input>
   </label>
+  <p>{{ computedTodos.length }} 件を表示中</p>
 
   <table>
     <thead>
@@ -25,7 +26,7 @@
         <td>{{ item.comment }}</td>
         <td class="state">
           <button v-on:click="doChangeState(item)">
-            {{ item.state }}
+            {{ labels[item.state] }}
           </button>
         </td>
         <td class="button">
@@ -101,6 +102,12 @@ export default class ViewB extends Vue {
     return this.todos.filter((el) => {
       return this.current < 0 ? true : this.current === el.state;
     }, this);
+  }
+
+  get labels() {
+    return this.options.reduce((a, b) => {
+      return Object.assign(a, {[b.value]: b.label});
+    }, {});
   }
 }
 </script>
