@@ -3,7 +3,8 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
-      <router-link to="/a">A</router-link>
+      <router-link to="/a">A</router-link> |
+      <router-link to="/b">B</router-link>
     </div>
     <router-view/>
   </div>
